@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HealthSphere AI | Smart Health Assistant</title>
+
+<!-- Icons & Charts -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Font -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+/* ================= BASE ================= */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --primary:#2563eb;
+  --secondary:#7c3aed;
+  --success:#10b981;
+  --warning:#f59e0b;
+  --danger:#ef4444;
+  --dark:#0f172a;
+  --gray:#64748b;
+  --white:#fff;
+
+  --bg-main: linear-gradient(135deg,#e0f2fe,#eef2ff,#f8fafc);
+  --glass: rgba(255,255,255,0.85);
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg-main);
+  min-height:100vh;
+  color: var(--dark);
+}
+
+/* ================= HEADER ================= */
+.header {
+  position: sticky;
+  top:0;
+  z-index:10;
+  backdrop-filter: blur(15px);
+  background: rgba(255,255,255,0.75);
+  padding: 1.5rem 2rem;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid rgba(0,0,0,0.05);
+}
+
+.logo {
+  display:flex;
+  gap:1rem;
+  align-items:center;
+}
+
+.logo-icon {
+  width:50px;
+  height:50px;
+  border-radius:14px;
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1.6rem;
+  animation:pulse 2s infinite;
+}
+
+.user-menu {
+  display:flex;
+  gap:1rem;
+  align-items:center;
+}
+
+.avatar {
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:800;
+}
+
+.status-badge {
+  padding:.35rem .9rem;
+  border-radius:20px;
+  font-size:.8rem;
+  font-weight:700;
+}
+
+.status-good { background:#dcfce7; color:#166534; }
+.status-warning { background:#fef3c7; color:#92400e; }
+
+/* ================= LAYOUT ================= */
+.container { max-width:1400px; margin:auto; padding:2rem; }
+
+.dashboard {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  gap:2rem;
+}
+
+/* ================= CARDS ================= */
+.card {
+  background:var(--glass);
+  backdrop-filter:blur(12px);
+  border-radius:20px;
+  padding:2rem;
+  box-shadow:0 20px 50px rgba(0,0,0,0.08);
+  transition:.3s;
+}
+
+.card:hover { transform:translateY(-8px); }
+
+.card-header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:1.5rem;
+}
+
+.card-title {
+  font-size:1.3rem;
+  font-weight:700;
+  display:flex;
+  gap:.5rem;
+  align-items:center;
+}
+
+/* ================= PREDICTION ================= */
+.prediction-box {
+  background:linear-gradient(135deg,#1e40af,#2563eb);
+  color:#fff;
+  border-radius:18px;
+  padding:2rem;
+}
+
+.risk-level {
+  text-align:center;
+  font-size:2.6rem;
+  font-weight:800;
+  margin-bottom:1rem;
+}
+
+.recommendation {
+  background:rgba(255,255,255,0.15);
+  padding:1rem;
+  border-radius:14px;
+  display:flex;
+  gap:.6rem;
+  margin-bottom:.5rem;
+}
+
+/* ================= CHART ================= */
+.chart-container { height:300px; }
+
+/* ================= HEALTH TIPS ================= */
+.tip {
+  background:#f1f5f9;
+  border-left:4px solid var(--success);
+  padding:1rem;
+  border-radius:14px;
+  margin-bottom:.6rem;
+  display:flex;
+  gap:.6rem;
+}
+
+/* ================= MODAL ================= */
+.modal {
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.6);
+  backdrop-filter:blur(5px);
+  align-items:center;
+  justify-content:center;
+}
+
+.modal-content {
+  background:#fff;
+  padding:2rem;
+  border-radius:18px;
+  width:90%;
+  max-width:450px;
+}
+
+.close-modal {
+  float:right;
+  cursor:pointer;
+  font-size:1.5rem;
+}
+
+/* ================= ANIMATION ================= */
+@keyframes pulse {
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.1)}
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+  <div class="logo">
+    <div class="logo-icon"><i class="fas fa-heartbeat"></i></div>
+    <div>
+      <h1>HealthSphere AI</h1>
+      <p style="color:var(--gray);font-size:.9rem">Smart Personal Health Assistant</p>
+    </div>
+  </div>
+
+  <div class="user-menu">
+    <div class="avatar" id="avatar">JD</div>
+    <div>
+      <div style="font-weight:600" id="userName">John Doe</div>
+      <div class="status-badge status-good" id="userStatus">Healthy</div>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+<div class="dashboard">
+
+<!-- AI Prediction -->
+<div class="card">
+  <div class="card-header">
+    <h2 class="card-title"><i class="fas fa-brain"></i> AI Health Prediction</h2>
+  </div>
+  <div class="prediction-box">
+    <div class="risk-level" id="riskText">LOW RISK</div>
+    <div class="recommendation"><i class="fas fa-walking"></i> Stay active</div>
+    <div class="recommendation"><i class="fas fa-apple-alt"></i> Balanced diet</div>
+    <div class="recommendation"><i class="fas fa-bed"></i> Proper sleep</div>
+  </div>
+</div>
+
+<!-- Chart -->
+<div class="card">
+  <div class="card-header">
+    <h2 class="card-title"><i class="fas fa-chart-area"></i> Heart Rate</h2>
+  </div>
+  <div class="chart-container">
+    <canvas id="healthChart"></canvas>
+  </div>
+</div>
+
+<!-- Tips -->
+<div class="card">
+  <div class="card-header">
+    <h2 class="card-title"><i class="fas fa-lightbulb"></i> Daily Tips</h2>
+  </div>
+  <div class="tip"><i class="fas fa-glass-water"></i> Drink more water</div>
+  <div class="tip"><i class="fas fa-person-running"></i> 30 min exercise</div>
+  <div class="tip"><i class="fas fa-heart"></i> Reduce stress</div>
+</div>
+
+</div>
+</main>
+
+<script>
+/* ================= LIVE HEART RATE ================= */
+let heartRate = 72;
+const status = document.getElementById("userStatus");
+const riskText = document.getElementById("riskText");
+
+const ctx = document.getElementById('healthChart');
+const chart = new Chart(ctx, {
+  type:'line',
+  data:{
+    labels:['Now'],
+    datasets:[{
+      data:[heartRate],
+      borderColor:'#2563eb',
+      backgroundColor:'rgba(37,99,235,0.15)',
+      tension:.4,
+      fill:true
+    }]
+  },
+  options:{
+    responsive:true,
+    plugins:{legend:{display:false}},
+    scales:{y:{min:50,max:120}}
+  }
+});
+
+setInterval(()=>{
+  heartRate += Math.floor(Math.random()*5-2);
+  heartRate = Math.max(55,Math.min(110,heartRate));
+
+  chart.data.labels.push('');
+  chart.data.datasets[0].data.push(heartRate);
+  if(chart.data.labels.length>12){
+    chart.data.labels.shift();
+    chart.data.datasets[0].data.shift();
+  }
+  chart.update();
+
+  if(heartRate>95){
+    status.textContent="High Pulse";
+    status.className="status-badge status-warning";
+    riskText.textContent="MEDIUM RISK";
+  } else {
+    status.textContent="Healthy";
+    status.className="status-badge status-good";
+    riskText.textContent="LOW RISK";
+  }
+},2000);
+</script>
+
+</body>
+</html>
